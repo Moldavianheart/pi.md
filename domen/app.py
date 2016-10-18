@@ -37,4 +37,4 @@ class Domen:
         return o.hostname
 		    							
 
-domen = Domen()
+

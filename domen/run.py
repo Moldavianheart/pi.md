@@ -3,11 +3,19 @@ import os
 import urllib.request
 import bs4 as bs
 from urllib.parse import urlparse
-
 already_crawled = []
 crawling  = []
-def get_details():
-    ...
+
+def get_details(url):
+    req = urllib.request.Request(url,headers={'User-Agent': 'Mozilla/5.0'})
+    req.addheaders = [('User-agent', 'PiBot/0.1\n')]
+    with urllib.request.urlopen(req) as u:
+        s = u.read()
+    soup = bs.BeautifulSoup(s,'lxml')
+    title =soup.title.string
+    desc = soup.findAll(attrs={"name":"description"})
+    keyword = soup.findAll(attrs={"name":"keywords"})
+    keyword = keyword[0]['content']
 
 def follow_links(url):
     global already_crawled
@@ -53,5 +61,4 @@ def follow_links(url):
         follow_links(site)
         
 
-    
-follow_links('https://molddata.md/') 
+get_details('https://molddata.md/')    

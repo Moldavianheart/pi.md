@@ -6,12 +6,15 @@ from urllib.parse import urlparse
 
 already_crawled = []
 crawling  = []
-
+def get_details():
+    ...
 
 def follow_links(url):
     global already_crawled
     global crawling 
-    with urllib.request.urlopen(url) as u:
+    req = urllib.request.Request(url)
+    req.addheaders = [('User-agent', 'PiBot/0.1\n')]
+    with urllib.request.urlopen(req) as u:
         s = u.read()
     soup = bs.BeautifulSoup(s,'lxml')
     body = soup.body
@@ -36,16 +39,19 @@ def follow_links(url):
                 continue        
             elif l[0:5] != 'https' and l[0:4] != 'http':
                 l = "{}://{}/{}".format(urlparse(url).scheme,urlparse(url).hostname,l)
-            print(l)  
-            if l in already_crawled:
-                ...
-            else:    
-                already_crawled = l
-                crawling = l
+            
+            if l not in already_crawled:
+            
+                already_crawled.append(l)
+                crawling.append(l)
+                print(l)
 
 
-    crawling.pop(0)   
-    print(crawling)    
+    crawling.pop()
+    
+    for site in crawling:
+        follow_links(site)
+        
 
     
 follow_links('https://molddata.md/') 
